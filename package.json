@@ -1,0 +1,58 @@
+{
+    "name": "movie-trivia",
+    "description": "Waseem's IMDb Top 250 Movie Trivia Game App -  LWC OSS",
+    "version": "1.0.0",
+    "author": "Waseem Ali Sabeel",
+    "bugs": "https://github.com/WaseemAliSabeel/movie-trivia-lwc/issues",
+    "dependencies": {
+        "compression": "^1.7.4",
+        "express": "^4.17.1",
+        "helmet": "^4.2.0",
+        "lightning-base-components": "^1.11.1-alpha"
+    },
+    "devDependencies": {
+        "@salesforce-ux/design-system": "^2.13.7",
+        "eslint": "^7.16.0",
+        "husky": "^4.3.6",
+        "lint-staged": "^10.5.3",
+        "lwc-services": "^2.3.0",
+        "prettier": "^2.2.1"
+    },
+    "engines": {
+        "node": "16.x",
+        "npm": "6.x",
+        "yarn": "1.x"
+    },
+    "homepage": "https://github.com/WaseemAliSabeel/movie-trivia-lwc",
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "keywords": [
+        "lwc"
+    ],
+    "license": "MIT",
+    "lint-staged": {
+        "**/*.{css,html,js,json,md,ts,yaml,yml}": [
+            "prettier --write"
+        ],
+        "./src/**/*.js": [
+            "eslint"
+        ]
+    },
+    "repository": "WaseemAliSabeel/movie-trivia-lwc/",
+    "scripts": {
+        "build": "lwc-services build -m production",
+        "build:development": "lwc-services build",
+        "lint": "eslint ./src/**/*.js",
+        "prettier": "prettier --write \"**/*.{css,html,js,json,md,ts,yaml,yml}\"",
+        "prettier:verify": "prettier --list-different \"**/*.{css,html,js,json,md,ts,yaml,yml}\"",
+        "serve": "node scripts/server.js",
+        "test:unit": "lwc-services test:unit",
+        "test:unit:coverage": "lwc-services test:unit --coverage",
+        "test:unit:debug": "lwc-services test:unit --debug",
+        "test:unit:watch": "lwc-services test:unit --watch",
+        "watch": "lwc-services watch"
+    }
+}

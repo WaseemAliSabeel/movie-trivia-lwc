@@ -1,0 +1,305 @@
+<!-- sldsValidatorIgnore -->
+<template>
+
+
+    <!-- Team Setup Modal starts -->
+    <template if:false={teamsReady}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick={assignTeams}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                            size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Set Up Team Members</h2>
+                </header>
+                <!-- Modal/Popup Box LWC body starts here -->
+                <div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col">
+                            <lightning-input required type="text" label="Team A Name" value={ATeamName}
+                                onchange={bindATeamName}></lightning-input>
+                            <lightning-textarea name="teamA" label="Team A Members" placeholder="type here..."
+                                onchange={bindAMembers} value={ATeamMembers}></lightning-textarea>
+                        </div>
+                        <div class="slds-col">
+                            <lightning-input required type="text" label="Team B Name" value={BTeamName}
+                                onchange={bindBTeamName}></lightning-input>
+                            <lightning-textarea name="teamB" label="Team B Members" placeholder="type here..."
+                                onchange={bindBMembers} value={BTeamMembers}></lightning-textarea>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modalfooter here -->
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_brand" onclick={assignTeams} title="Begin">Begin</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <!-- Team Setup Modal ends -->
+
+    <lightning-layout multiple-rows="true" horizontal-align="center">
+        <lightning-layout-item size="12" class="fullbg dark-bg">
+            <!-- Header Starts-->
+            <lightning-layout multiple-rows="true" horizontal-align="center"
+                class="slds-text-color_inverse lgc-bg-inverse">
+                <lightning-layout-item size="10" flexibility="auto">
+                    <lightning-layout multiple-rows="true">
+                        <lightning-layout-item size="3" padding="around-small">
+                            <img src="https://www.homelectrical.com/sites/default/files/styles/original_image/public/images/product/blg/trivia%20animation.gif"
+                                height="200" width="200" alt="Vote Image here"></img>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="8" padding="around-small">
+                            <h1 class="slds-hyphenate slds-text-heading_large">Welcome
+                                to Trivia Time
+                            </h1>
+                            <p class="slds-text-heading_small slds-hyphenate slds-var-m-top_medium">
+                                Guess the Movie Title from Plot Summary and other details. Data is sourced from IMDb.
+                            </p>
+                            <p class="slds-text-heading_small slds-hyphenate slds-var-m-top_medium">
+                                Correct Answer grants 10 points. Revealing Hints reduces points to be won by 5.</p>
+                            <p class="slds-text-heading_small slds-hyphenate slds-var-m-top_medium">
+                                First Team to score 100 points wins!</p>
+                            <div class="slds-var-m-around_small slds-var-p-top_small">
+                                <lightning-button variant="neutral" label="Set Up Teams" title="Set Up Teams"
+                                    icon-name="utility:people" icon-position="left" onclick={setUpTeams}>
+                                </lightning-button>
+                                <lightning-button variant="neutral" label="Reset Points" title="Reset Points"
+                                    icon-name="utility:refresh" icon-position="left" onclick={resetProgress}>
+                                </lightning-button>
+                            </div>
+
+
+                        </lightning-layout-item>
+                        <lightning-layout-item size="1">
+                            <div class="slds-var-p-around_medium">
+                                <lightning-button-icon icon-name="utility:topic" title="some"
+                                    alternative-text="Toggle Mode" variant="border-inverse" onclick={togglemode}>
+                                </lightning-button-icon>
+                            </div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </lightning-layout-item>
+            </lightning-layout>
+            <!-- Header Ends -->
+
+            <!-- Game Over panel Starts -->
+            <lightning-layout multiple-rows="true" horizontal-align="center">
+                <lightning-layout-item size="9" flexibility="auto" padding="around-medium">
+                    <template if:true={gameOver}>
+                        <div class="slds-box slds-theme_success slds-text-align_center">
+                            <div class="slds-text-heading_large">Winner : {winnerTeam} !</div>
+                            <template if:true={winnerTeamMembers}>
+                                <lightning-formatted-text value={winnerTeamMembers}></lightning-formatted-text>
+                            </template>
+                        </div>
+                        <div class="slds-align_absolute-center slds-var-p-around_medium">
+                            <lightning-button variant="neutral" label="Play Again" title="Play Again"
+                                icon-name="utility:refresh" icon-position="left" onclick={resetProgress}>
+                            </lightning-button>
+                        </div>
+                    </template>
+                </lightning-layout-item>
+            </lightning-layout>
+            <!-- Game Over panel Ends -->
+
+
+            <!-- Trivia Box Starts -->
+            <template if:false={gameOver}>
+                <lightning-layout multiple-rows="true" horizontal-align="center" style="height:500px;">
+                    <lightning-layout-item size="1" flexibility="auto">
+                    </lightning-layout-item>
+                    <!-- Team A Side panel starts -->
+                    <lightning-layout-item size="2" flexibility="auto" padding="around-medium"
+                        class="lgc-bg-inverse slds-box slds-wrap slds-hyphenate">
+                        <div class="slds-text-color_inverse slds-text-heading_medium slds-text-align_center">
+                            {ATeamName}
+                        </div>
+                        <div
+                            class="slds-text-color_inverse slds-text-heading_small slds-var-p-vertical_medium slds-text-align_center">
+                            Score : {ATeamPoints}
+                        </div>
+                        <div>
+                            <lightning-progress-bar value={ATeamPoints} size="large" variant="circular">
+                            </lightning-progress-bar>
+                        </div>
+                        <template if:true={ATeamMembers}>
+                            <div class="slds-text-color_inverse  slds-var-p-top_large slds-wrap">
+                                <p>
+                                    <lightning-formatted-text value={ATeamMembers}></lightning-formatted-text>
+                                </p>
+                            </div>
+                        </template>
+                    </lightning-layout-item>
+                    <!-- Team A Side panel ends -->
+                    <!-- Movie panel starts -->
+                    <lightning-layout-item size="6" flexibility="auto" padding="around-medium" class="lgc-bg-inverse">
+                        <div class="slds-text-color_inverse slds-wrap">
+                            <lightning-layout multiple-rows="true">
+                                <lightning-layout-item size="3" flexibility="auto">
+                                    <template if:false={showAnswer}>
+                                        <div class="slds-var-p-vertical_medium">
+                                            <img src="https://www.shareicon.net/data/2016/08/18/814079_cinema_512x512.png"
+                                                height="120" width="150" alt="Movie Icon goes here"></img>
+                                        </div>
+                                    </template>
+                                    <template if:true={showAnswer}>
+                                        <div class="slds-var-p-vertical_medium">
+                                            <a href={randomData.url} target="_blank" rel="noopener noreferrer">
+                                                <img src={randomData.poster_image} height="120" width="150"
+                                                    alt="Movie Icon"></img>
+                                            </a>
+                                        </div>
+                                        <div class="slds-var-p-vertical_small">Rating : {randomData.rating}</div>
+                                        <div>Top 250 Rank : {randomData.ranking}</div>
+                                    </template>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="9" flexibility="auto">
+                                    <template if:true={randomData}>
+                                        <template if:false={showAnswer}>
+                                            <div class="slds-text-heading_large">Guess the Movie</div>
+                                        </template>
+                                        <template if:true={showAnswer}>
+                                            <div class="slds-text-heading_large slds-var-p-vertical_x-small">
+                                                {randomData.movie_name}
+                                            </div>
+                                        </template>
+                                        <div class="slds-text-heading_medium slds-var-p-vertical_x-small">
+                                            {randomData.summary}
+                                        </div>
+                                        <div class="slds-text-heading_small slds-var-p-vertical_x-small">Year :
+                                            {randomData.year}
+                                        </div>
+                                        <div class="slds-text-heading_small slds-var-p-vertical_x-small">Genre :
+                                            {randomData.genres}
+                                        </div>
+                                        <template if:true={showHints}>
+                                            <div class="slds-text-heading_small slds-var-p-vertical_x-small">Director :
+                                                {randomData.director}</div>
+                                            <div class="slds-text-heading_small slds-var-p-vertical_x-small">Writer :
+                                                {randomData.writers}</div>
+                                            <div class="slds-text-heading_small slds-var-p-vertical_x-small">Stars :
+                                                {randomData.stars}</div>
+                                        </template>
+                                    </template>
+                                </lightning-layout-item>
+
+                                <!-- Movie panel Buttons start -->
+                                <lightning-layout-item size="12" flexibility="auto">
+                                    <div class="slds-grid slds-grid_align-center slds-var-p-vertical_medium">
+                                        <div class="slds-col">
+                                            <lightning-button variant="neutral" label="Reveal hint" title="Reveal Hint"
+                                                icon-name="utility:share_post" icon-position="left"
+                                                class="slds-var-m-left_small" onclick={revealHints}
+                                                disabled={showHints}>
+                                            </lightning-button>
+                                        </div>
+                                        <div class="slds-col">
+                                            <lightning-button variant="success" label="Reveal Answer"
+                                                title="Reveal Answer" icon-name="utility:success" icon-position="left"
+                                                class="slds-var-m-left_small" onclick={revealAnswer}
+                                                disabled={showAnswer}>
+                                            </lightning-button>
+                                        </div>
+                                        <div class="slds-col">
+                                            <lightning-button variant="neutral" label="Next" title="Next"
+                                                icon-name="utility:product_transfer" icon-position="right"
+                                                class="slds-var-m-left_small" onclick={randomize}>
+                                            </lightning-button>
+                                        </div>
+                                    </div>
+                                </lightning-layout-item>
+                                <!-- Movie panel Buttons end -->
+                                <!-- Score  Assignment starts-->
+                                <lightning-layout-item size="12" flexibility="auto">
+                                    <div
+                                        class="slds-grid slds-grid_align-spread slds-var-p-vertical_large slds-wrap slds-hyphenate">
+                                        <div class="slds-col slds-size_1-of-3">
+                                            <template if:true={showAnswer}>
+                                                <lightning-button variant="destructive" label="Team Scores"
+                                                    title="Team Scores" icon-name="utility:left" icon-position="left"
+                                                    onclick={addPointsToA} disabled={disableA}>
+                                                </lightning-button>
+                                            </template>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-3">
+                                            <div
+                                                class="slds-text-heading_small slds-var-p-top_xx-small slds-align_absolute-center">
+                                                Points to be
+                                                Won :
+                                                {currentPoints}</div>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-3">
+                                            <template if:true={showAnswer}>
+                                                <div class="slds-clearfix">
+                                                    <div class="slds-float_right">
+                                                        <lightning-button variant="brand" label="Team Scores"
+                                                            title="Team Scores" icon-name="utility:right"
+                                                            icon-position="right" onclick={addPointsToB}
+                                                            disabled={disableB}>
+                                                        </lightning-button>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </lightning-layout-item>
+                                <!-- Score  Assignment ends -->
+                            </lightning-layout>
+
+                        </div>
+                    </lightning-layout-item>
+                    <!-- Movie panel ends -->
+                    <!-- Team B Side panel starts -->
+                    <lightning-layout-item size="2" flexibility="auto" padding="around-medium"
+                        class="lgc-bg-inverse slds-box  slds-wrap slds-hyphenate">
+                        <div class="slds-text-color_inverse slds-text-heading_medium slds-text-align_center">
+                            {BTeamName}
+                        </div>
+                        <div
+                            class="slds-text-color_inverse slds-text-heading_small slds-var-p-vertical_medium slds-text-align_center">
+                            Score : {BTeamPoints}
+                        </div>
+                        <div>
+                            <lightning-progress-bar value={BTeamPoints} size="large" variant="circular">
+                            </lightning-progress-bar>
+                        </div>
+                        <template if:true={BTeamMembers}>
+                            <div class="slds-text-color_inverse slds-var-p-top_large">
+                                <p>
+                                    <lightning-formatted-text value={BTeamMembers}></lightning-formatted-text>
+                                </p>
+                            </div>
+                        </template>
+                    </lightning-layout-item>
+                    <!-- Team B Side panel ends -->
+                    <lightning-layout-item size="1" flexibility="auto">
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <!-- Trivia Box Ends -->
+
+            <!-- Footer starts -->
+            <lightning-layout multiple-rows="true" horizontal-align="center" style="margin-top:250px">
+                <lightning-layout-item size="12" flexibility="auto" padding="around-small"
+                    class="lgc-bg-inverse slds-text-color_inverse">
+                    <footer>
+                        <p class="slds-text-align_center slds-text-heading_medium"><a
+                                href="https://sfwiseguys.wordpress.com/2020/08/15/ballot-box/">Made in
+                                Salesforce using
+                                LWC.</a>
+                            © <span>{currentYear}</span> Waseem Ali Sabeel
+                        </p>
+                    </footer>
+                </lightning-layout-item>
+            </lightning-layout>
+            <!-- Footer ends -->
+        </lightning-layout-item>
+    </lightning-layout>
+</template>
