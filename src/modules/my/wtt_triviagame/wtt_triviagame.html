@@ -52,8 +52,8 @@
                 <lightning-layout-item size="10" flexibility="auto">
                     <lightning-layout multiple-rows="true">
                         <lightning-layout-item size="3" padding="around-small">
-                            <img src="https://www.homelectrical.com/sites/default/files/styles/original_image/public/images/product/blg/trivia%20animation.gif"
-                                height="200" width="200" alt="Vote Image here"></img>
+                            <img src="../../../resources/TriviaAnimation.gif"
+                                height="200" width="200" alt="Trivia Image here"></img>
                         </lightning-layout-item>
                         <lightning-layout-item size="8" padding="around-small">
                             <h1 class="slds-hyphenate slds-text-heading_large">Welcome
@@ -145,15 +145,15 @@
                                 <lightning-layout-item size="3" flexibility="auto">
                                     <template if:false={showAnswer}>
                                         <div class="slds-var-p-vertical_medium">
-                                            <img src="https://www.shareicon.net/data/2016/08/18/814079_cinema_512x512.png"
-                                                height="120" width="150" alt="Movie Icon goes here"></img>
+                                            <img src="../../../resources/MovieIcon.png"
+                                                height="120" width="150" alt="Movie Icon here"></img>
                                         </div>
                                     </template>
                                     <template if:true={showAnswer}>
                                         <div class="slds-var-p-vertical_medium">
                                             <a href={randomData.url} target="_blank" rel="noopener noreferrer">
                                                 <img src={randomData.poster_image} height="120" width="150"
-                                                    alt="Movie Icon"></img>
+                                                    alt="IMDb Movie Link Here"></img>
                                             </a>
                                         </div>
                                         <div class="slds-var-p-vertical_small">Rating : {randomData.rating}</div>
